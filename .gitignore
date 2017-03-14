@@ -1,0 +1,8 @@
+/target/
+/.settings/
+/.sonar/
+/.idea/
+ssnake-tech.iml
+.classpath
+.project
+QRiskReport.xlsx

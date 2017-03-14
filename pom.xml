@@ -1,0 +1,592 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.ssnake-tech</groupId>
+	<artifactId>qrisk</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<name>qrisk</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<argLine>-Dfile.encoding=UTF-8</argLine>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Web -->
+		<jsp.version>2.2</jsp.version>
+		<jstl.version>1.2</jstl.version>
+		<servlet.version>3.1.0</servlet.version>
+		<shiro.version>1.2.2</shiro.version>
+
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<plugin.jacoco.version>0.7.6.201602180812</plugin.jacoco.version>
+		<jacoco.outputDir>${project.basedir}/target</jacoco.outputDir>
+		<jacoco.out.ut.file>jacoco-ut.exec</jacoco.out.ut.file>
+		<sonar.jacoco.reportPath>${jacoco.outputDir}/${jacoco.out.ut.file}</sonar.jacoco.reportPath>
+		<jacoco.out.it.file>jacoco-it.exec</jacoco.out.it.file>
+		<sonar.jacoco.itReportPath>${jacoco.outputDir}/${jacoco.out.it.file}</sonar.jacoco.itReportPath>
+
+	</properties>
+	<build>
+		<finalName>qrisk</finalName>
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<additionalConfig>
+						<file>
+							<name>.settings/org.eclipse.core.resources.prefs</name>
+							<content>
+                <![CDATA[eclipse.preferences.version=1${line.separator}encoding/<project>=${project.build.sourceEncoding}${line.separator}]]>
+							</content>
+						</file>
+					</additionalConfig>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.7</source> <!-- 源代码使用的开发版本 -->
+					<target>1.7</target> <!-- 需要生成的目标class文件的编译版本 -->
+					<!-- 一般而言，target与source是保持一致的，但是，有时候为了让程序能在其他版本的jdk中运行(对于低版本目标jdk，源代码中需要没有使用低版本jdk中不支持的语法)，会存在target不同于source的情况 -->
+
+					<!-- 这下面的是可选项 -->
+					<meminitial>128m</meminitial>
+					<maxmem>512m</maxmem>
+					<fork>true</fork> <!-- fork is enable,用于明确表示编译版本配置的可用 -->
+
+					<!-- 这个选项用来传递编译器自身不包含但是却支持的参数选项 -->
+					<!-- compilerArgument>-verbose -bootclasspath ${java.home}\lib\rt.jar</compilerArgument -->
+					<encoding>UTF8</encoding>
+
+				</configuration>
+			</plugin>
+
+
+		</plugins>
+	</build>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>4.2.4.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.5.8</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>1.2.14</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+		</dependency>
+
+		<!--dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+		</dependency-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<!-- aspectj相关jar包-->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>1.7.4</version>
+		</dependency>
+		<!-- test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-all</artifactId>
+			<version>1.3</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>1.10.19</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.ant</artifactId>
+			<version>0.7.7.201606060606</version>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-module-junit4</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.powermock</groupId>
+			<artifactId>powermock-api-mockito</artifactId>
+			<version>1.6.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.1.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		
+		<!-- shiro -->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-ehcache</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-core</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-web</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-quartz</artifactId>
+			<version>${shiro.version}</version>
+		</dependency>
+		<!-- Web -->
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>${jsp.version}</version>
+			<!--scope>provided</scope-->
+			<exclusions>
+				<exclusion>
+					<artifactId>servlet-api</artifactId>
+					<groupId>javax.servlet</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.version}</version>
+			<!--scope>provided</scope-->
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${jstl.version}</version>
+			<!--scope>provided</scope-->
+		</dependency>
+
+		<!-- Json -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.6.2</version>
+		</dependency>
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>4.3.11.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.25</version>
+			<!--scope>provided</scope-->
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+			<version>4.3.11.Final</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.4</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.10.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.15</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.15</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/commons-beanutils/commons-beanutils -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
+		</dependency>
+
+
+
+
+		<!-- dependency> <groupId>org.hibernate</groupId> <artifactId>hibernate-validator</artifactId> 
+			<version>4.3.2.Final</version> </dependency -->
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>http://192.168.1.2:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<url>http://192.168.1.2:8081/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+	<mailingLists>
+		<mailingList>
+			<name>Lin Yiheng</name>
+			<post>lyh@ssnake-tech.com</post>
+		</mailingList>
+	</mailingLists>
+	<developers>
+		<developer>
+			<id>linyiheng</id>
+			<name>Lin Yiheng</name>
+			<email>lyh@ssnake-tech.com</email>
+			<timezone>8</timezone>
+		</developer>
+	</developers>
+	<profiles>
+		<profile>
+			<properties>
+				<sonar.host.url>http://172.31.20.46:9000</sonar.host.url>
+				<sonar.sources>src/main/java,src/main/webapp/script/main,src/main/webapp/WEB-INF</sonar.sources>
+			</properties>
+			<id>ut_it_report_for_sonar</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>${plugin.jacoco.version}</version>
+
+						<executions>
+							<execution>
+								<id>prepare-ut-agent</id>
+								<phase>process-test-classes</phase>
+								<goals>
+									<goal>prepare-agent</goal>
+								</goals>
+								<configuration>
+									<destFile>${sonar.jacoco.reportPath}</destFile>
+									<propertyName>jacoco.agent.ut.arg</propertyName>
+									<append>true</append>
+								</configuration>
+							</execution>
+							<execution>
+								<id>jacoco-pre-it-test</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>prepare-agent-integration</goal>
+								</goals>
+								<configuration>
+									<destFile>${sonar.jacoco.itReportPath}</destFile>
+									<address>127.0.0.1</address>
+									<port>5000</port>
+									<output>tcpserver</output>
+									<dumpOnExit>false</dumpOnExit>
+									<propertyName>jacoco.agent.it.arg</propertyName>
+								</configuration>
+							</execution>
+							<execution>
+								<id>jacoco-post-it-test</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>dump</goal>
+								</goals>
+								<configuration>
+									<destFile>${sonar.jacoco.itReportPath}</destFile>
+									<address>127.0.0.1</address>
+									<port>5000</port>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.eclipse.jetty</groupId>
+						<artifactId>jetty-maven-plugin</artifactId>
+						<version>9.1.6.v20160112</version>
+						<configuration>
+							<stopPort>9966</stopPort>
+							<stopKey>stop-jetty-for-it</stopKey>
+							<webAppConfig>
+								<contextPath>/${project.build.finalName}</contextPath>
+							</webAppConfig>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>mysql</groupId>
+								<artifactId>mysql-connector-java</artifactId>
+								<version>5.1.38</version>
+							</dependency>
+						</dependencies>
+						<executions>
+							<execution>
+								<id>start-jetty</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>run-forked</goal>
+								</goals>
+								<configuration>
+									<waitForChild>false</waitForChild>
+									<jvmArgs>-Djetty.port=9977 ${jacoco.agent.it.arg}</jvmArgs>
+									<maxStartupLines>300</maxStartupLines>
+								</configuration>
+							</execution>
+							<execution>
+								<id>stop-jetty</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+
+							</execution>
+						</executions>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.19.1</version>
+						<configuration>
+							<argLine>${jacoco.agent.ut.arg}</argLine>
+							<includes>
+								<include>**/*UT.java</include>
+							</includes>
+							<properties>
+								<property>
+									<name>listener</name>
+									<value>org.sonar.java.jacoco.JUnitListener</value>
+								</property>
+							</properties>
+						</configuration>
+					</plugin>
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-failsafe-plugin</artifactId>
+						<version>2.19.1</version>
+						<configuration>
+							<reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+						</configuration>
+						<executions>
+							<execution>
+								<id>run-integration-test</id>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>integration-test</goal>
+								</goals>
+								<!-- configuration> <argLine>${jacoco.agent.it.arg}</argLine> </configuration -->
+							</execution>
+							<execution>
+								<id>verify</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>verify</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+
+
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>3.0.2</version>
+						<executions>
+							<execution>
+								<id>verify</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sonar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.codehaus.sonar-plugins.java</groupId>
+					<artifactId>sonar-jacoco-listeners</artifactId>
+					<version>3.2</version>
+					<scope>test</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
+			<id>dev_resource</id>
+			<properties>
+				<db.driver>com.mysql.jdbc.Driver</db.driver>
+				<db.url>jdbc:mysql:///ssnake?characterEncoding=UTF8</db.url>
+				<db.username>root</db.username>
+				<db.password>command</db.password>
+				<db.validationQuery>select 1 from dual</db.validationQuery>
+				<!-- hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect -->
+			</properties>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+				</resources>
+
+			</build>
+		</profile>
+		<profile>
+			<id>dev</id>
+			<build>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-maven-plugin</artifactId>
+					<version>9.1.6.v20160112</version>
+					<configuration>
+						<stopPort>9966</stopPort>
+						<stopKey>stop-jetty-for-it</stopKey>
+						<webAppConfig>
+							<contextPath>/${project.build.finalName}</contextPath>
+						</webAppConfig>
+					</configuration>
+					<!--dependencies>
+						<dependency>
+							<groupId>mysql</groupId>
+							<artifactId>mysql-connector-java</artifactId>
+							<version>5.1.38</version>
+						</dependency>
+					</dependencies-->
+				</plugin>
+			</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<!-- repositories> <repository> <id>nexus</id> <name>nexus</name> <url>http://172.31.20.46:8081/nexus/content/groups/public/</url> 
+		<releases> <enabled>true</enabled> </releases> <snapshots> <enabled>true</enabled> 
+		</snapshots> </repository> </repositories> <pluginRepositories> <pluginRepository> 
+		<id>nexus</id> <name>nexus</name> <url>http://172.31.20.46:8081/nexus/content/groups/public/</url> 
+		<releases> <enabled>true</enabled> </releases> <snapshots> <enabled>true</enabled> 
+		</snapshots> </pluginRepository> </pluginRepositories -->
+</project>
