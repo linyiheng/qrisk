@@ -98,7 +98,7 @@
         <property name="usernameParam" value="username"/>
         <property name="passwordParam" value="password"/>
         <property name="rememberMeParam" value="rememberMe"/>
-        <property name="loginUrl" value="/riskCount/login"/>
+        <property name="loginUrl" value="/riskCount"/>
     </bean>
 
     <bean id="sysUserFilter" class="com.ssnakeTech.qrisk.web.filter.SysUserFilter"/>
@@ -107,6 +107,8 @@
     <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
         <property name="securityManager" ref="securityManager"/>
         <property name="loginUrl" value="/riskCount"/>
+        <property name="successUrl" value="/riskCount" />
+
         <property name="filters">
             <util:map>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
@@ -115,7 +117,7 @@
         </property>
         <property name="filterChainDefinitions">
             <value>
-                /riskCount = anon
+                /riskCount = authc
                 /static/** = anon
                 /common/** = anon
                 /logout = logout

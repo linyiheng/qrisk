@@ -10,11 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-/**
- * <p>User: Zhang Kaitao
- * <p>Date: 14-2-15
- * <p>Version: 1.0
- */
+
 public class SysUserFilter extends PathMatchingFilter {
 
     @Autowired

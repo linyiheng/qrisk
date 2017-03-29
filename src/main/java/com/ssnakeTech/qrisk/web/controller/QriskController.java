@@ -7,6 +7,9 @@ import com.ssnakeTech.qrisk.entity.User;
 import com.ssnakeTech.qrisk.service.QriskService;
 import com.ssnakeTech.qrisk.service.ResourceService;
 import com.ssnakeTech.qrisk.service.UserService;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +47,20 @@ public class QriskController {
         if(account!=null){
             Set<String> permissions= userService.findPermissions(account);
         }*/
+        String exceptionClassName = (String)request.getAttribute("shiroLoginFailure");
+        String error = null;
+        if(UnknownAccountException.class.getName().equals(exceptionClassName)) {
+            error = "用户名/密码错误";
+        } else if(IncorrectCredentialsException.class.getName().equals(exceptionClassName)) {
+            error = "用户名/密码错误";
+        } else if(ExcessiveAttemptsException.class.getName().equals(exceptionClassName)){
+            error = "登陆失败多次，账户锁定10分钟";
+        } else if(exceptionClassName != null) {
+            error = "其他错误：" + exceptionClassName;
+        }
+
+        mv.addObject("error",error);
+
         if (calculate!=null) {
             if(calculate.equals("计算风险")){
                 String username=request.getParameter("username");

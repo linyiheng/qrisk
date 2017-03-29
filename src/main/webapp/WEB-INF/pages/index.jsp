@@ -1,4 +1,5 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%@ include file="/common/taglibs.jsp"%>
 <!DOCTYPE HTML>
 <html lang="zh-CN">
@@ -54,6 +55,9 @@
 
     .main-bar{
         background:#FFFFFF;
+    }
+    .error{
+        color:red;
     }
 </style>
 <link rel="stylesheet" href="${ctx}/static/css/bootstrap-select.min.css"/>
@@ -149,9 +153,11 @@ $(function(){
                 var fromDate=$("#fromDate").val();
                 var toDate=$("#toDate").val();
                 window.location.href="${ctx}/riskCount/download?fromDate="+fromDate+"&toDate="+toDate;
-
             }
         );
+        if("${error}"!=""){
+           $("#login").trigger("click");
+        }
 
     });
 </script>
@@ -162,8 +168,12 @@ $(function(){
     <div class="row">
     <div class="col-md-2 col-lg-3"></div>
     <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 main-bar">
-    当前用户：游客<button class="btn btn-default" id="login" href="#myModal" data-toggle="modal" data-target="#myLoginModal">登陆</button>
-
+    <shiro:guest>
+    当前用户：游客<a id="login" href="javascript:void(0)" data-toggle="modal" data-target="#myLoginModal">登陆</a>
+    </shiro:guest>
+    <shiro:user>
+    欢迎[<shiro:principal/>]登录，<a href="${ctx}/logout">退出</a>
+    </shiro:user>
     <!-- Modal -->
     <div class="modal fade" id="myLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
@@ -173,20 +183,24 @@ $(function(){
             <h4 class="modal-title" id="myModalLabel">登陆</h4>
           </div>
 
-          <div class="modal-body">
-            账号：<input type="text" id="username" name="account" class="form-control"/>
-            密码：<input type="password" id="password" name="password" class="form-control"/>
-          </div>
-          <div class="modal-footer">
-             <button type="button" class="btn btn-default" data-dismiss="modal">取消登陆</button>
-             <input type="submit" id="adminLogin" class="btn btn-primary">管理员登陆</input>
-          </div>
+          <form name="login" action="${ctx}/riskCount" method="post">
+            <div class="modal-body">
+                <div class="error">${error}</div>
+                账号：<input type="text" id="username" name="username" class="form-control" value="<shiro:principal/>"/><br/>
+                密码：<input type="password" id="password" name="password" class="form-control"/><br/>
+                自动登录：<input type="checkbox" name="rememberMe" value="true"><br/>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消登陆</button>
+                <input type="submit" id="adminLogin" class="btn btn-primary" value="管理员登陆"/>
+            </div>
+          </form>
 
         </div>
       </div>
     </div>
 
-    <form name="calculator" action='${ctx}/riskCount' method='POST'>
+    <form name="calculator" action="${ctx}/riskCount" method='POST'>
         用户姓名:&nbsp;<input type="text" name="username" class="form-control"/><br/>
         用户ID号:&nbsp;<input type="text" name="idnum" class="form-control"/><br/>
 	    年龄(25-84):&nbsp;<input type="text" name="age" class="form-control"/><br/>
@@ -238,6 +252,8 @@ $(function(){
 	该分数在同样年龄性别与种族的健康人群重的比例为:&nbsp;<strong>${scoreOfaHealthyPersonWithSameAgeSexAndEthnicity}</strong><br/>
 	相对风险:&nbsp;<strong>${relativeRisk}</strong><br/>
 	你的QRisk健康心脏年龄:&nbsp;<strong>${qriskHealthHeartAge}</strong><br/>
+	</p>
+	<shiro:user>
 	<div class="input-group date form_datetime">
         <input type='text' class="form-control" id="fromDate"/>
         <span class="input-group-addon">
@@ -251,7 +267,7 @@ $(function(){
             </span>
     </div>
 	<input type="button" id="downloadQriskReport" class="btn btn-default" value='下载QRisk报表' aria-label="Left Align"/>
-	</p>
+    </shiro:user>
 
 	</div>
 	<div class="col-md-2 col-lg-3"></div>
