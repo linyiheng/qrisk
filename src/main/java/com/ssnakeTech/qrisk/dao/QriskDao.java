@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface QriskDao {
     public void save(BodyInfo bodyInfo, HealthInfo healthInfo);
-    public List<QriskInfo> getQriskInfoList();
+    public List<QriskInfo> getQriskInfoList(String fromDate,String toDate);
 }

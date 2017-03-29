@@ -1,9 +1,12 @@
-package com.ssnakeTech.qrisk.controller;
+package com.ssnakeTech.qrisk.web.controller;
 
 import com.mchange.io.FileUtils;
 import com.ssnakeTech.qrisk.entity.BodyInfo;
 import com.ssnakeTech.qrisk.entity.HealthInfo;
+import com.ssnakeTech.qrisk.entity.User;
 import com.ssnakeTech.qrisk.service.QriskService;
+import com.ssnakeTech.qrisk.service.ResourceService;
+import com.ssnakeTech.qrisk.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by leo on 2017/3/5.
@@ -25,12 +30,20 @@ import java.util.List;
 public class QriskController {
     @Autowired
     QriskService qriskService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    ResourceService resourceService;
 
     private Logger logger= LoggerFactory.getLogger(this.getClass());
     @RequestMapping(value="",method={RequestMethod.POST,RequestMethod.GET})
     public ModelAndView qriskInfoSubmitGet(HttpServletRequest request, HttpServletResponse response){
         ModelAndView mv=new ModelAndView();
         String calculate=request.getParameter("calculate");
+        /*String account=request.getParameter("account");
+        if(account!=null){
+            Set<String> permissions= userService.findPermissions(account);
+        }*/
         if (calculate!=null) {
             if(calculate.equals("计算风险")){
                 String username=request.getParameter("username");
@@ -119,17 +132,30 @@ public class QriskController {
 
     @RequestMapping(value="download",method=RequestMethod.GET)
     public void downloadQRiskReport(HttpServletRequest request,HttpServletResponse response){
-        qriskService.doSaveToExcel();
+        String fromDate=request.getParameter("fromDate");
+        String toDate=request.getParameter("toDate");
+        logger.info(request.getRequestURI());
+        qriskService.doSaveToExcel(fromDate,toDate);
         File file=new File("QRiskReport.xlsx");
-        response.setContentType("application/force-download");
-        response.addHeader("Content-Disposition","attachment;fileName=QRiskReport.xlsx");
+        String fileName="";
+        try {
+            fileName = URLEncoder.encode("QRiskReport.xlsx", "UTF-8");
+        }catch(Exception e){
+            logger.info(e.getMessage());
+        }
+        //response.setContentType("application/force-download");
+        //response.setContentType(request.getServletContext().getMimeType(fileName));
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.addHeader("Content-Disposition","attachment;fileName="+fileName);
         try {
             response.getOutputStream().write(FileUtils.getBytes(file));
         }catch(Exception e){
             logger.info(e.getMessage());
         }
     }
+    @RequestMapping(value="login",method = RequestMethod.POST)
+    public void login(){
 
-
+    }
 
 }

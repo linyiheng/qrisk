@@ -1,16 +1,17 @@
 <%@ page language="java" pageEncoding="UTF-8" contentType="text/html;charset=utf-8"%>
 <%@ include file="/common/taglibs.jsp"%>
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="zh-CN">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <title>QRisk中文</title>
 <link rel="stylesheet" href="${ctx}/static/css/bootstrap.min.css"/>
 <style>
     body{
         color:#666;
+        background:#F6F6F6;
     }
     form{
         line-height:40px;
@@ -21,6 +22,14 @@
         font-size:15px;
     }
     input[type="text"]{
+        display:inline-block;
+        height:33.6px;
+        font-size:15px;
+        margin:0px 0px 0px 8px;
+        padding:6px 12px;
+        width:70px;
+    }
+    input[type="password"]{
         display:inline-block;
         height:33.6px;
         font-size:15px;
@@ -39,20 +48,27 @@
         height:20px;
         font-size:12px;
     }
+    .form_datetime{
+        width:150px;
+    }
 
-
+    .main-bar{
+        background:#FFFFFF;
+    }
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css"/>
+<link rel="stylesheet" href="${ctx}/static/css/bootstrap-select.min.css"/>
 <link href="//cdn.bootcss.com/iCheck/1.0.2/skins/all.css" rel="stylesheet"/>
-
-
-<script src="${ctx}/static/js/jquery-1.12.1.min.js"></script>
+<link href="//cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet"/>
+<script src="//cdn.bootcss.com/jquery/1.12.1/jquery.min.js"></script>
 <script src="${ctx}/static/js/form.v002.js"></script>
-<script src="${ctx}/static/js/bootstrap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="${ctx}/static/js/bootstrap-select.min.js"></script>
 <script src="//cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
+<script src="//cdn.bootcss.com/moment.js/2.17.1/moment-with-locales.min.js"></script>
+<script src="//cdn.bootcss.com/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
 
-<script>
+
+<script type="text/javascript">
 $(function(){
         $('input').iCheck({
             checkboxClass: 'icheckbox_flat-grey',
@@ -62,37 +78,38 @@ $(function(){
         $("input[name='idnum']").attr("value","${idnum}");
         $("input[name='age']").attr("value","${age}");
         if("${sex}"==="0"){
-          $(":radio").last().prop("checked",true);
+          $(":radio").last().iCheck('check');
         }else{
-          $(":radio").first().prop("checked",true);
+          $(":radio").first().iCheck('check');
         }
         $("select[name='ethnicity'] > option[value=\"${ethnicity}\"").prop("selected",true);
         $("select[name='smoke_cat'] > option[value=\"${smoke_cat}\"").prop("selected",true);
         $("select[name='diabetes_cat']>option[value=\"${diabetes_cat}\"").prop("selected",true);
         if("${fh_cvd}"==="on"){
-            $("input[name='fh_cvd']").prop("checked",true);
+            $("input[name='fh_cvd']").iCheck('check');
         }else{
-            $("input[name='fh_cvd']").prop("checked",false);
+            $("input[name='fh_cvd']").iCheck('uncheck');
         }
         if("${b_renal}"==="on"){
-            $("input[name='b_renal']").prop("checked",true);
+            $("input[name='b_renal']").iCheck('check');
         }else{
-            $("input[name='b_renal']").prop("checked",false);
+
+            $("input[name='b_renal']").iCheck('uncheck');
         }
         if("${b_AF}"==="on"){
-            $("input[name='b_AF']").prop("checked",true);
+            $("input[name='b_AF']").iCheck('check');
         }else{
-            $("input[name='b_AF']").prop("checked",false);
+            $("input[name='b_AF']").iCheck('uncheck');
         }
         if("${b_treatedhyp}"==="on"){
-            $("input[name='b_treatedhyp']").prop("checked",true);
+            $("input[name='b_treatedhyp']").iCheck('check');
         }else{
-            $("input[name='b_treatedhyp']").prop("checked",false);
+            $("input[name='b_treatedhyp']").iCheck('uncheck');
         }
         if("${b_ra}"==="on"){
-            $("input[name='b_ra']").prop("checked",true);
+            $("input[name='b_ra']").iCheck('check');
         }else{
-            $("input[name='b_ra']").prop("checked",false);
+            $("input[name='b_ra']").prop("uncheck");
         }
         $("input[name='rati']").attr("value","${rati}");
         $("input[name='sbp']").attr("value","${sbp}");
@@ -104,6 +121,37 @@ $(function(){
                 return checkCalculatorForm(this);
          }
         );
+        Date.prototype.Format = function(fmt)   
+        { //author: meizz   
+          var o = {   
+            "M+" : this.getMonth()+1,                 //月份   
+            "d+" : this.getDate(),                    //日   
+            "h+" : this.getHours(),                   //小时   
+            "m+" : this.getMinutes(),                 //分   
+            "s+" : this.getSeconds(),                 //秒   
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度   
+            "S"  : this.getMilliseconds()             //毫秒   
+          };   
+          if(/(y+)/.test(fmt))   
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));   
+          for(var k in o)   
+            if(new RegExp("("+ k +")").test(fmt))   
+          fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+          return fmt;   
+        }  
+        $(".form_datetime>input").attr("value",new Date().Format("yyyy-MM-dd"));
+        $(".form_datetime").datetimepicker({
+            format: 'YYYY-MM-DD',
+            locale:moment.locale('zh-cn')
+        });
+        $("#downloadQriskReport").on("click",
+            function(){
+                var fromDate=$("#fromDate").val();
+                var toDate=$("#toDate").val();
+                window.location.href="${ctx}/riskCount/download?fromDate="+fromDate+"&toDate="+toDate;
+
+            }
+        );
 
     });
 </script>
@@ -112,7 +160,31 @@ $(function(){
 <body>
     <div class="container-fluid">
     <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-12">
+    <div class="col-md-2 col-lg-3"></div>
+    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 main-bar">
+    当前用户：游客<button class="btn btn-default" id="login" href="#myModal" data-toggle="modal" data-target="#myLoginModal">登陆</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myLoginModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">登陆</h4>
+          </div>
+
+          <div class="modal-body">
+            账号：<input type="text" id="username" name="account" class="form-control"/>
+            密码：<input type="password" id="password" name="password" class="form-control"/>
+          </div>
+          <div class="modal-footer">
+             <button type="button" class="btn btn-default" data-dismiss="modal">取消登陆</button>
+             <input type="submit" id="adminLogin" class="btn btn-primary">管理员登陆</input>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <form name="calculator" action='${ctx}/riskCount' method='POST'>
         用户姓名:&nbsp;<input type="text" name="username" class="form-control"/><br/>
@@ -166,10 +238,23 @@ $(function(){
 	该分数在同样年龄性别与种族的健康人群重的比例为:&nbsp;<strong>${scoreOfaHealthyPersonWithSameAgeSexAndEthnicity}</strong><br/>
 	相对风险:&nbsp;<strong>${relativeRisk}</strong><br/>
 	你的QRisk健康心脏年龄:&nbsp;<strong>${qriskHealthHeartAge}</strong><br/>
-	<a href="${ctx}/riskCount/download">下载QRisk统计报表</a>
+	<div class="input-group date form_datetime">
+        <input type='text' class="form-control" id="fromDate"/>
+        <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+    </div>
+    <div class="input-group date form_datetime">
+            <input type='text' class="form-control" id="toDate"/>
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-calendar"></span>
+            </span>
+    </div>
+	<input type="button" id="downloadQriskReport" class="btn btn-default" value='下载QRisk报表' aria-label="Left Align"/>
 	</p>
 
 	</div>
+	<div class="col-md-2 col-lg-3"></div>
     </div>
     </div>
 

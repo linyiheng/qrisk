@@ -113,8 +113,8 @@ public class QriskServiceImpl implements QriskService {
     }
 
     @Override
-    public void doSaveToExcel() {
-        List<QriskInfo> qriskInfoList= qriskDao.getQriskInfoList();
+    public void doSaveToExcel(String fromDate,String toDate) {
+        List<QriskInfo> qriskInfoList= qriskDao.getQriskInfoList(fromDate,toDate);
         String fileName="QRiskReport.xlsx";
         Workbook workbook =new XSSFWorkbook();
         Sheet sheet =workbook.createSheet("QRisk报表");

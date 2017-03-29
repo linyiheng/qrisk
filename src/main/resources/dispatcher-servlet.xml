@@ -11,7 +11,7 @@
        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
 
  
-    <context:component-scan base-package="com.ssnakeTech.qrisk.controller" use-default-filters="false">
+    <context:component-scan base-package="com.ssnakeTech.qrisk.web.controller" use-default-filters="false">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
         <context:include-filter type="annotation" expression="org.springframework.web.bind.annotation.ControllerAdvice"/>
     </context:component-scan>
@@ -41,4 +41,5 @@
     <bean id="exceptionHandlerExceptionResolver" class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver">
     </bean>
     <!--bean class="com.ssnake.portal.web.exception.DefaultExceptionHandler"/-->
+    <import resource="dispatcher-servlet-shiro.xml"/>
 </beans>

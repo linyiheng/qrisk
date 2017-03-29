@@ -16,7 +16,9 @@ import javax.annotation.Resource;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -63,16 +65,27 @@ public class QriskDaoImpl extends JdbcDaoSupport implements QriskDao{
     }
 
     @Override
-    public List<QriskInfo> getQriskInfoList() {
-        String sql="select username,idNum,age,sex,ethnicity,smoke_cat,diabetes_cat,rati,sbp,height,weight,yearsRiskCalculatedFor,fh_cvd,b_renal,b_AF,b_treatedhyp,b_ra,qriskScore,scoreOfaHealthyPersonWithSameAgeSexAndEthnicity,relativeRisk,qriskHealthHeartAge from qrisk_info where date(create_time)=CURDATE()";
-        List<Map<String,Object>> qriskInfoMapList=this.getJdbcTemplate().queryForList(sql);
-        List<QriskInfo> qriskInfoList=new ArrayList<>();
-        for(Map<String,Object>map:qriskInfoMapList) {
-            QriskInfo qriskInfo=new QriskInfo();
-            BeanWrapper beanWrapper=new BeanWrapperImpl(qriskInfo);
-            beanWrapper.setPropertyValues(map);
-            qriskInfoList.add(qriskInfo);
+    public List<QriskInfo> getQriskInfoList(String fromDate,String toDate) {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            final Date from = sdf.parse(fromDate);
+            final Date to = sdf.parse(toDate);
+
+            String sql = "select username,idNum,age,sex,ethnicity,smoke_cat,diabetes_cat,rati,sbp,height,weight,yearsRiskCalculatedFor,fh_cvd,b_renal,b_AF,b_treatedhyp,b_ra,qriskScore,scoreOfaHealthyPersonWithSameAgeSexAndEthnicity,relativeRisk,qriskHealthHeartAge from qrisk_info where date(create_time) between ? and ?";
+            List<Map<String, Object>> qriskInfoMapList = this.getJdbcTemplate().queryForList(sql,new java.sql.Date(from.getTime()), new java.sql.Date(to.getTime()));
+            List<QriskInfo> qriskInfoList = new ArrayList<>();
+            for (Map<String, Object> map : qriskInfoMapList) {
+                QriskInfo qriskInfo = new QriskInfo();
+                BeanWrapper beanWrapper = new BeanWrapperImpl(qriskInfo);
+                beanWrapper.setPropertyValues(map);
+                qriskInfoList.add(qriskInfo);
+            }
+            return qriskInfoList;
+        }catch(Exception e){
+            e.printStackTrace();
         }
-        return qriskInfoList;
+        return null;
+
     }
 }

@@ -11,6 +11,6 @@ import org.springframework.stereotype.Service;
 public interface QriskService {
     public String doBodyInfoSend(BodyInfo bodyInfo);
     public HealthInfo doCrawler(String pageContent);
-    public void doSaveToExcel();
+    public void doSaveToExcel(String fromDate,String toDate);
     public void doSaveQriskInfo(BodyInfo bodyInfo,HealthInfo healthInfo);
 }
